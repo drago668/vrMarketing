@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo 3D + AR</title>
+
+  <!-- Model Viewer -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .container {
+      width: 100%;
+      height: 70vh;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    button {
+      margin: 20px;
+      padding: 15px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #00c896;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00a87a;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 80vh;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Explora el modelo</h1>
+
+  <!-- 🔹 1. Spline -->
+  <div class="container">
+    <iframe src='https://my.spline.design/untitled-SA9NvPyTUDpgty2K2BiUjnoE/' frameborder='0' width='100%' height='100%'></iframe>
+  </div>
+
+  <!-- 🔹 2. Botón -->
+  <button onclick="activarAR()">📱 Ver en tu espacio (AR)</button>
+
+  <!-- 🔹 3. Model Viewer -->
+  <model-viewer 
+    id="visorAR"
+    src="pruebaVR.glb"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    camera-controls
+    auto-rotate>
+  </model-viewer>
+
+  <script>
+    function activarAR() {
+      const visor = document.getElementById("visorAR");
+
+      visor.style.display = "block";
+
+      // Activa automáticamente AR
+      visor.activateAR();
+    }
+  </script>
+
+</body>
+</html>
