@@ -2,27 +2,84 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Demo 3D + AR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumina | Sofá Modular</title>
 
-  <!-- Model Viewer -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
+    /* Variables de color de marca */
+    :root {
+      --bg-color: #F8F7F5;
+      --text-main: #2C2A29;
+      --text-muted: #6B6863;
+      --accent: #B2906C;
+      --accent-hover: #9A7B5A;
+      --card-bg: #FFFFFF;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: white;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Barra de navegación simulada */
+    header {
+      width: 100%;
+      padding: 20px 0;
+      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      background: var(--bg-color);
+    }
+
+    header h2 {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Sección Principal del Producto */
+    .product-section {
+      max-width: 1000px;
+      width: 90%;
+      padding: 40px 0;
       text-align: center;
     }
 
-    h1 {
-      margin: 20px;
+    .product-info h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      margin: 0 0 10px 0;
     }
 
-    .container {
+    .product-info p {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      line-height: 1.6;
+    }
+
+    /* Contenedor del Iframe 3D (Spline) */
+    .viewer-container {
       width: 100%;
-      height: 70vh;
+      height: 65vh;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      background: #ffffff;
+      margin-bottom: 30px;
     }
 
     iframe {
@@ -31,58 +88,210 @@
       border: none;
     }
 
-    button {
-      margin: 20px;
-      padding: 15px 25px;
-      font-size: 18px;
+    /* Botón de Realidad Aumentada */
+    .btn-ar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
       border: none;
-      border-radius: 10px;
-      background: #00c896;
+      border-radius: 30px;
+      background: var(--accent);
       color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(178, 144, 108, 0.4);
+    }
+
+    .btn-ar:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(178, 144, 108, 0.6);
+    }
+
+    .btn-ar svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* Ocultar Model Viewer principal por defecto (solo es para AR) */
+    #visorAR {
+      display: none;
+    }
+
+    /* SECCIÓN DE CATÁLOGO */
+    .catalog-section {
+      max-width: 1000px;
+      width: 90%;
+      padding: 60px 0;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      margin-top: 40px;
+    }
+
+    .catalog-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+      transition: transform 0.3s ease;
       cursor: pointer;
     }
 
-    button:hover {
-      background: #00a87a;
+    .product-card:hover {
+      transform: translateY(-5px);
     }
 
-    model-viewer {
+    /* Estilos para los modelos 3D miniatura del catálogo */
+    .card-3d {
       width: 100%;
-      height: 80vh;
-      display: none;
+      height: 250px;
+      background-color: #EAE8E3;
+      outline: none;
+    }
+
+    .card-3d:focus-visible {
+      outline: none;
+    }
+
+    .card-info {
+      padding: 20px;
+      text-align: left;
+    }
+
+    .card-title {
+      font-weight: 600;
+      font-size: 18px;
+      margin: 0 0 10px 0;
+    }
+
+    .card-price {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      .product-info h1 { font-size: 32px; }
+      .viewer-container { height: 50vh; }
+      .catalog-section h2 { font-size: 26px; }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Explora el modelo</h1>
+  <header>
+    <h2>BASE & CO</h2>
+  </header>
 
-  <!-- 🔹 1. Spline -->
-  <div class="container">
-    <iframe src='https://my.spline.design/untitled-SA9NvPyTUDpgty2K2BiUjnoE/' frameborder='0' width='100%' height='100%'></iframe>
-  </div>
+  <section class="product-section">
+    <div class="product-info">
+      <h1>Muebles de todo el hogar</h1>
+      <p>Explora cada detalle los diseños disponibles . Gira, acerca y visualiza cómo los materiales premium se adaptan a la perfección en tu hogar.</p>
+    </div>
 
-  <!-- 🔹 2. Botón -->
-  <button onclick="activarAR()">📱 Ver en tu espacio (AR)</button>
+    <div class="viewer-container">
+      <iframe src='https://my.spline.design/untitled-SA9NvPyTUDpgty2K2BiUjnoE/' frameborder='0'></iframe>
+    </div>
 
-  <!-- 🔹 3. Model Viewer -->
-  <model-viewer 
-    id="visorAR"
-    src="pruebaVR.glb"
-    ar
-    ar-modes="webxr scene-viewer quick-look"
-    camera-controls
-    auto-rotate>
-  </model-viewer>
+    <button class="btn-ar" onclick="activarAR()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6.824 5.378l2.999-1.39A2 2 0 0111.4 3.73l7.989 2.596A2 2 0 0121 8.23v8.527a2 2 0 01-1.385 1.902l-8 2.6A2 2 0 0110.4 21.05l-7.44-2.55A2 2 0 011.5 16.59V8.52a2 2 0 011.386-1.902l3.938-1.24zM11.5 5.75l-7 2.275v8.525l7 2.4V5.75zm1.5.01v13.19l7-2.276V8.15l-7-2.39z"/>
+      </svg>
+      Ver en tu espacio (AR)
+    </button>
+
+    <model-viewer 
+      id="visorAR"
+      src="pruebaVR.glb"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      camera-controls
+      auto-rotate>
+    </model-viewer>
+  </section>
+
+<section class="catalog-section">
+    <h2>Completa tu espacio</h2>
+    
+    <div class="catalog-grid">
+      
+      <div class="product-card">
+        <model-viewer 
+          class="card-3d" 
+          src="https://modelviewer.dev/assets/ShopifyModels/Chair.glb" 
+          alt="Silla Amarilla 3D"
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          shadow-intensity="1">
+        </model-viewer>
+        <div class="card-info">
+          <h3 class="card-title">Silla Lounge Amarilla</h3>
+          <p class="card-price">$249.00</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <model-viewer 
+          class="card-3d" 
+          src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb" 
+          alt="Sillón de Terciopelo 3D"
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          shadow-intensity="1">
+        </model-viewer>
+        <div class="card-info">
+          <h3 class="card-title">Sillón de Terciopelo</h3>
+          <p class="card-price">$320.00</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <model-viewer 
+          class="card-3d" 
+          src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/IridescenceLamp.glb" 
+          alt="Lámpara Moderna 3D"
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          shadow-intensity="1">
+        </model-viewer>
+        <div class="card-info">
+          <h3 class="card-title">Lámpara de Mesa Iridiscente</h3>
+          <p class="card-price">$95.00</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
 
   <script>
     function activarAR() {
       const visor = document.getElementById("visorAR");
-
+      // Se muestra el model-viewer y se activa la Realidad Aumentada
       visor.style.display = "block";
-
-      // Activa automáticamente AR
       visor.activateAR();
     }
   </script>
